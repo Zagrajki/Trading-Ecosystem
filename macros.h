@@ -15,5 +15,3 @@ inline auto FATAL(const std::string& msg) noexcept {
     std::cerr << msg << std::endl;
     exit(EXIT_FAILURE);
 }
-
-int main(){ASSERT(false, "DOI"); return 0;}
