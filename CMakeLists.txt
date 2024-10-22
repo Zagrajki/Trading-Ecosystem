@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.0)
 project(Trading-Ecosystem)
 
 set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_COMPILER g++)
+set(CMAKE_CXX_COMPILER g++-14)
 set(CMAKE_CXX_FLAGS "-std=c++23 -Wall -Wextra -Werror -Wpedantic")
 set(CMAKE_VERBOSE_MAKEFILE on)
 
@@ -18,3 +18,6 @@ list(APPEND LIBS pthread)
 
 add_executable(thread_example thread_example.cpp)
 target_link_libraries(thread_example PUBLIC ${LIBS})
+
+add_executable(mem_pool_example mem_pool_example.cpp)
+target_link_libraries(mem_pool_example PUBLIC ${LIBS})
