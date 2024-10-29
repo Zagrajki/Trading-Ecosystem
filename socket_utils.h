@@ -51,7 +51,7 @@ namespace Common {
         ifaddrs *ifaddr = nullptr;
 
         if (getifaddrs(&ifaddr) != -1) {
-            for (ifaddrs *ifa; ifa; ifa = ifa->ifa_next) {
+            for (ifaddrs *ifa = ifaddr; ifa; ifa = ifa->ifa_next) {
                 if(ifa->ifa_addr && ifa->ifa_addr->sa_family == AF_INET && iface == ifa->ifa_name) {
                     getnameinfo(ifa->ifa_addr, sizeof(sockaddr_in), buf, sizeof(buf), NULL, 0, NI_NUMERICHOST);
                     break;
@@ -77,18 +77,6 @@ namespace Common {
         return (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<void *>(&one), sizeof(one)) != -1);
     }
 
-    auto wouldBlock() -> bool {
-        return (errno == EWOULDBLOCK || errno == EINPROGRESS);
-    }
-
-    auto setTTL(int fd, int ttl) -> bool {
-        return (setsockopt(fd, IPPROTO_IP, IP_TTL, reinterpret_cast<void *>(&ttl), sizeof(ttl)) != -1);
-    }
-
-    auto setMcastTTL(int fd, int mcast_ttl) noexcept -> bool {
-        return (setsockopt(fd, IPPROTO_IP, IP_MULTICAST_TTL, reinterpret_cast<void *>(&mcast_ttl), sizeof(mcast_ttl)) != -1);
-    }
-
     /// Allow software receive timestamps on incoming packets.
     inline auto setSOTimestamp(int fd) -> bool {
         int one = 1;
@@ -101,7 +89,7 @@ namespace Common {
         return (setsockopt(fd, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) != -1);
     }
 
-    /// Create a TSP/ UDP socket to either connect to or listen for data on or listen for connections on the specified interface and IP:port information.
+    /// Create a TCP / UDP socket to either connect to or listen for data on or listen for connections on the specified interface and IP:port information.
     [[nodiscard]] inline auto createSocket(Logger &logger, const SocketCfg& socket_cfg) -> int {
         std::string time_str;
 
@@ -151,6 +139,6 @@ namespace Common {
             }
         }
 
-        return socket_fd
+        return socket_fd;
     }
 }
